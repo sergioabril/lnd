@@ -1,4 +1,3 @@
-
 # STATUS
 It's fully working. Bindings have been generated, and a simple `./build_mobile.go` should produce a fully functional *framework* for iOS.
 
