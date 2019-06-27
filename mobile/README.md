@@ -8,6 +8,7 @@ It's fully working. Bindings have been generated, and a simple `./build_mobile.g
 `https://github.com/sergioabril/lnd/tree/mobile-build-tool`
 
 #3 Modified *bindings.go* according Youtube talk.
+
 https://www.youtube.com/watch?v=IIxCYrRiP78
 What is not said there, is that you need to edit the `lightningnetwork/lnd/lnd.go` to include a two args Main() method that is called from *bindings.go*. Otherwise, it will fail to build an iOS module.
 
