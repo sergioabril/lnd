@@ -3,6 +3,7 @@
 *.o
 *.a
 *.so
+Gopkg.*
 
 # Folders
 _obj

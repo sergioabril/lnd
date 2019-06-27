@@ -18,12 +18,13 @@ var (
 func Start(extraArgs string, callback Callback) {
 	// Add the extra arguments to os.Args, as that will be parsed during
 	// startup
-	os.Args = append(os.Args, string.Fields(extraArgs)...)
+	os.Args = append(os.Args, strings.Fields(extraArgs)...)
 
 	// Call the "real" main in a nested manner so the defers will properly
 	// be exectured in the case of a graceful shutdown
 	go func() {
-		if err := lnd.Main(walletUnlockerLis, lightningLis); err != nil {
+		//if err := lnd.Main(walletUnlockerLis, lightningLis); err != nil {
+		if err := lnd.Main(); err != nil { /* Was throwing error about too many arguments for lnd.Main()*/
 			if e, ok := err.(*flags.Error); ok &&
 				e.Type == flags.ErrHelp {
 			} else {
