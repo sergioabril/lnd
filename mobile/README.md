@@ -1,24 +1,35 @@
-#Original files for mobile folder:
-https://github.com/sergioabril/lnd/tree/mobile-build-tool
+#1 Pull Master lightningnetwork/lnd
 
-#Modified according Youtube talk: 
+#2 Forked into my own branch mobile-build
+`https://github.com/sergioabril/lnd/tree/mobile-build-tool`
+
+#3 Modified *bindings.go* according Youtube talk: 
 https://www.youtube.com/watch?v=IIxCYrRiP78
 
-#How To build:
-just cd github.com/lightningnetwork/lnd &&& make ios
-
-#Notes, problems and questions:
-- I'm not using build_mobile.sh
-- looks like there is a double/triple circular reference during build process.
-
-- If I don't empty the Lnd.main() call on mobile/bindings.go, an error is thrown on build:
+#4 Regenerated bindings:
+1. Downloaded and installed https://github.com/halseth/promobile
+2. Modified it to set listeners inside for every service, because I wasn't able to feed them:
 ```
-# github.com/lightningnetwork/lnd/mobile
-mobile/bindings.go:26:21: too many arguments in call to lnd.Main
-	have (*bufconn.Listener, *bufconn.Listener)
-	want ()
+	listeners["walletunlocker"] = "bufWalletUnlockerLis"
+	listeners["lightning"] = "bufLightningLis"
 ```
+3. go install (inside promobile folder)
+4. ran *./gen_bindings.sh*
+5. Manually added vars to binding files: *bufLightningLis* and *bufWallet...*
 
-- On the resulting framework, there are *things missing*, like *protocol LndmobileRecvStream*, and four gRPC methods.
+#5 How I Built it
+just cd github.com/lightningnetwork/lnd &&& make ios, or ./build.sh
+(A dep init & dep ensure could be needed)
 
-- Makefile make ios is clumsy btw.
+#6 Notes, problems and questions:
+
+1. I can't build it with `//if err := lnd.Main(walletUnlockerLis, lightningLis); err != nil {`
+I need to remove the args inside lnd.Main()
+
+2. Even after this, XCODE throws errors for this (I have to remove them):
+```
+                    @"Status" : ^(NSData* bytes, NativeCallback* cb) { LndmobileStatus(bytes, cb); },
+                       @"SetScores" : ^(NSData* bytes, NativeCallback* cb) { LndmobileSetScores(bytes, cb); },
+                       @"QueryScores" : ^(NSData* bytes, NativeCallback* cb) { LndmobileQueryScores(bytes, cb); },
+                       @"ModifyStatus" : ^(NSData* bytes, NativeCallback* cb) { LndmobileModifyStatus(bytes, cb); },
+```

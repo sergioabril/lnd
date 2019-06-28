@@ -3,12 +3,12 @@ package lndmobile
 
 import (
 	"context"
-	
+
 	"github.com/golang/protobuf/proto"
 )
 
 // Callback is an interface that is passed in by callers of the library, and
-// specifies where the responses should be deliver.
+// specifies where the responses should be delivered.
 type Callback interface {
 	// OnResponse is called by the library when a response from the daemon
 	// for the associated RPC call is received. The reponse is a serialized
@@ -17,8 +17,22 @@ type Callback interface {
 	OnResponse([]byte)
 
 	// OnError is called by the library if any error is encountered during
+	// the execution of the RPC call.
+	OnError(error)
+}
+
+// RecvStream is an interface that is passed in by callers of the library, and
+// specifies where the streaming responses should be delivered.
+type RecvStream interface {
+	// OnResponse is called by the library when a new stream response from
+	// the daemon for the associated RPC call is available. The reponse is
+	// a serialized protobuf for the expected response, and must be
+	// deserialized by the caller.
+	OnResponse([]byte)
+
+	// OnError is called by the library if any error is encountered during
 	// the execution of the RPC call, or if the response stream ends. No
-	// responses will be received after this.
+	// more stream responses will be received after this.
 	OnError(error)
 }
 
@@ -137,7 +151,7 @@ type readStreamHandler struct {
 
 // start executes the RPC call specified by this readStreamHandler using the
 // specified serialized msg request.
-func (s *readStreamHandler) start(msg []byte, callback Callback) {
+func (s *readStreamHandler) start(msg []byte, rStream RecvStream) {
 	// We must make a copy of the passed byte slice, as there is no
 	// guarantee the contents won't be changed while the go routine is
 	// executing.
@@ -150,7 +164,7 @@ func (s *readStreamHandler) start(msg []byte, callback Callback) {
 		req := s.newProto()
 		err := proto.Unmarshal(data, req)
 		if err != nil {
-			callback.OnError(err)
+			rStream.OnError(err)
 			return
 		}
 
@@ -161,7 +175,7 @@ func (s *readStreamHandler) start(msg []byte, callback Callback) {
 		// request, and get the receive stream back.
 		stream, close, err := s.recvStream(ctx, req)
 		if err != nil {
-			callback.OnError(err)
+			rStream.OnError(err)
 			return
 		}
 		defer close()
@@ -172,7 +186,7 @@ func (s *readStreamHandler) start(msg []byte, callback Callback) {
 			// Read a response from the stream.
 			resp, err := stream.recv()
 			if err != nil {
-				callback.OnError(err)
+				rStream.OnError(err)
 				return
 			}
 
@@ -180,10 +194,10 @@ func (s *readStreamHandler) start(msg []byte, callback Callback) {
 			// caller.
 			b, err := proto.Marshal(resp)
 			if err != nil {
-				callback.OnError(err)
+				rStream.OnError(err)
 				return
 			}
-			callback.OnResponse(b)
+			rStream.OnResponse(b)
 		}
 	}()
 
@@ -203,7 +217,7 @@ type biStreamHandler struct {
 
 // start executes the RPC call specified by this biStreamHandler, sending
 // messages coming from the returned SendStream.
-func (b *biStreamHandler) start(callback Callback) (SendStream, error) {
+func (b *biStreamHandler) start(rStream RecvStream) (SendStream, error) {
 	ctx, cancel := context.WithCancel(context.Background())
 
 	// Start a bidirectional stream for the desired RPC method.
@@ -243,7 +257,7 @@ func (b *biStreamHandler) start(callback Callback) (SendStream, error) {
 			// Wait for a new response from the server.
 			resp, err := r.recv()
 			if err != nil {
-				callback.OnError(err)
+				rStream.OnError(err)
 				return
 			}
 
@@ -251,10 +265,10 @@ func (b *biStreamHandler) start(callback Callback) (SendStream, error) {
 			// caller.
 			b, err := proto.Marshal(resp)
 			if err != nil {
-				callback.OnError(err)
+				rStream.OnError(err)
 				return
 			}
-			callback.OnResponse(b)
+			rStream.OnResponse(b)
 		}
 	}()
 
