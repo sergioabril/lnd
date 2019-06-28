@@ -74,6 +74,7 @@ func getWalletUnlockerClient() (lnrpc.WalletUnlockerClient, func(), error) {
 // NOTE: This method produces a single result or error, and the callback will
 // be called only once.
 
+
 func GenSeed(msg []byte, callback Callback) {
 	s := &syncHandler{
 		newProto: func() proto.Message {
@@ -165,7 +166,6 @@ func UnlockWallet(msg []byte, callback Callback) {
 // ChangePassword changes the password of the encrypted wallet. This will
 // automatically unlock the wallet database if successful.
 //
-
 // NOTE: This method produces a single result or error, and the callback will
 // be called only once.
 

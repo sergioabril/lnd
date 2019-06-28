@@ -10,6 +10,7 @@ import (
 // Callback is an interface that is passed in by callers of the library, and
 // specifies where the responses should be delivered.
 
+
 type Callback interface {
 	// OnResponse is called by the library when a response from the daemon
 	// for the associated RPC call is received. The reponse is a serialized
@@ -34,6 +35,7 @@ type RecvStream interface {
 	// OnError is called by the library if any error is encountered during
 	// the execution of the RPC call, or if the response stream ends. No
 	// more stream responses will be received after this.
+
 
 	OnError(error)
 }
@@ -155,6 +157,7 @@ type readStreamHandler struct {
 // specified serialized msg request.
 func (s *readStreamHandler) start(msg []byte, rStream RecvStream) {
 
+
 	// We must make a copy of the passed byte slice, as there is no
 	// guarantee the contents won't be changed while the go routine is
 	// executing.
@@ -169,6 +172,7 @@ func (s *readStreamHandler) start(msg []byte, rStream RecvStream) {
 		if err != nil {
 			rStream.OnError(err)
 
+
 			return
 		}
 
@@ -180,6 +184,7 @@ func (s *readStreamHandler) start(msg []byte, rStream RecvStream) {
 		stream, close, err := s.recvStream(ctx, req)
 		if err != nil {
 			rStream.OnError(err)
+
 
 			return
 		}
@@ -193,6 +198,7 @@ func (s *readStreamHandler) start(msg []byte, rStream RecvStream) {
 			if err != nil {
 				rStream.OnError(err)
 
+
 				return
 			}
 
@@ -204,6 +210,7 @@ func (s *readStreamHandler) start(msg []byte, rStream RecvStream) {
 				return
 			}
 			rStream.OnResponse(b)
+
 
 		}
 	}()
@@ -265,7 +272,6 @@ func (b *biStreamHandler) start(rStream RecvStream) (SendStream, error) {
 			resp, err := r.recv()
 			if err != nil {
 				rStream.OnError(err)
-
 				return
 			}
 
@@ -277,7 +283,6 @@ func (b *biStreamHandler) start(rStream RecvStream) (SendStream, error) {
 				return
 			}
 			rStream.OnResponse(b)
-
 		}
 	}()
 

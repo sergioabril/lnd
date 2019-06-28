@@ -31,6 +31,7 @@ just cd github.com/lightningnetwork/lnd && make ios
 #6 Notes, problems and questions:
 
 1. Even after this, XCODE throws errors for these grabbed from lightning-app mobile repo (I had to remove them):
+
 ```
                     @"Status" : ^(NSData* bytes, NativeCallback* cb) { LndmobileStatus(bytes, cb); },
                        @"SetScores" : ^(NSData* bytes, NativeCallback* cb) { LndmobileSetScores(bytes, cb); },

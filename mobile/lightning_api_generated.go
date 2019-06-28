@@ -1395,6 +1395,7 @@ func UpdateChannelPolicy(msg []byte, callback Callback) {
 // ForwardingHistory allows the caller to query the htlcswitch for a record of
 // all HTLCs forwarded within the target time range, and integer offset
 
+
 // within that time range. If no time-range is specified, then the first chunk
 // of the past 24 hrs of forwarding history are returned.
 // 
