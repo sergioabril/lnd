@@ -10,9 +10,10 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 )
 
+
 var (
-	lightningLis		= bufconn.Listen(100)
-	walletUnlockerLis 	= bufconn.Listen(100)
+	bufLightningLis		= bufconn.Listen(100)
+	bufWalletUnlockerLis 	= bufconn.Listen(100)
 )
 
 func Start(extraArgs string, callback Callback) {
@@ -23,8 +24,8 @@ func Start(extraArgs string, callback Callback) {
 	// Call the "real" main in a nested manner so the defers will properly
 	// be exectured in the case of a graceful shutdown
 	go func() {
-		//if err := lnd.Main(walletUnlockerLis, lightningLis); err != nil {
-		if err := lnd.Main(); err != nil { /* Was throwing error about too many arguments for lnd.Main()*/
+		if err := lnd.Main(bufLightningLis, bufWalletUnlockerLis); err != nil {
+		//if err := lnd.Main(); err != nil { /* Was throwing error about too many arguments for lnd.Main()*/
 			if e, ok := err.(*flags.Error); ok &&
 				e.Type == flags.ErrHelp {
 			} else {
