@@ -14,13 +14,14 @@ import (
 	"github.com/golang/protobuf/proto"
 
 	"github.com/lightningnetwork/lnd/lnrpc"
-	"google.golang.org/grpc/test/bufconn"
+	//"google.golang.org/grpc/test/bufconn"
 )
-
+/*
+//No need, already defined on bindings.go, where is fed to main() btw
 var (
 	bufLightningLis = bufconn.Listen(100)
 )
-
+*/
 func getLightningConn() (*grpc.ClientConn, func(), error) {
 	conn, err := bufLightningLis.Dial()
 	if err != nil {
