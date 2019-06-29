@@ -10,6 +10,7 @@ import (
 	"google.golang.org/grpc/test/bufconn"
 )
 
+
 var (
 	bufLightningLis		= bufconn.Listen(100)
 	bufWalletUnlockerLis 	= bufconn.Listen(100)
