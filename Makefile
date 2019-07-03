@@ -115,7 +115,7 @@ scratch: build
 ios:
 	@$(call print, "Building for ios")
 	$(shell rm -rf vendor && GO111MODULE=on go mod vendor)
-	$(shell GO111MODULE=off gomobile bind -target=ios -tags="ios experimental" -ldflags="-X github.com/lightningnetwork/lnd/build.Commit=v0.7.0-beta-rc3" -v -o /Users/sergio/go/src/github.com/lightningnetwork/lnd/mobile/build/ios/Lndmobile.framework github.com/lightningnetwork/lnd/mobile)
+	$(shell GO111MODULE=off gomobile bind -target=ios -tags="ios experimental" -ldflags="-X github.com/lightningnetwork/lnd/build.Commit=v0.7.0-beta" -v -o /Users/sergio/go/src/github.com/lightningnetwork/lnd/mobile/build/ios/Lndmobile.framework github.com/lightningnetwork/lnd/mobile)
 	@$(call print, "End")
 
 # =======
