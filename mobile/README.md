@@ -1,3 +1,4 @@
+
 # STATUS
 It's fully working. Bindings have been generated, and a simple `./build_mobile.go` should produce a fully functional *framework* for iOS.
 
@@ -8,7 +9,6 @@ It's fully working. Bindings have been generated, and a simple `./build_mobile.g
 `https://github.com/sergioabril/lnd/tree/mobile-build-tool`
 
 #3 Modified *bindings.go* according Youtube talk.
-
 https://www.youtube.com/watch?v=IIxCYrRiP78
 What is not said there, is that you need to edit the `lightningnetwork/lnd/lnd.go` to include a two args Main() method that is called from *bindings.go*. Otherwise, it will fail to build an iOS module.
 
@@ -31,7 +31,6 @@ just cd github.com/lightningnetwork/lnd && make ios
 #6 Notes, problems and questions:
 
 1. Even after this, XCODE throws errors for these grabbed from lightning-app mobile repo (I had to remove them):
-
 ```
                     @"Status" : ^(NSData* bytes, NativeCallback* cb) { LndmobileStatus(bytes, cb); },
                        @"SetScores" : ^(NSData* bytes, NativeCallback* cb) { LndmobileSetScores(bytes, cb); },

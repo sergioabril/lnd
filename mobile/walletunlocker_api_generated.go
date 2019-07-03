@@ -74,7 +74,6 @@ func getWalletUnlockerClient() (lnrpc.WalletUnlockerClient, func(), error) {
 // NOTE: This method produces a single result or error, and the callback will
 // be called only once.
 
-
 func GenSeed(msg []byte, callback Callback) {
 	s := &syncHandler{
 		newProto: func() proto.Message {
