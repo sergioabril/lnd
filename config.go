@@ -808,11 +808,17 @@ func loadConfig() (*config, error) {
 			return nil, err
 		}
 
+		/*
+		* Edited to support Neutrino on MainNet
+		* Not sure if any other Neutrino file should be modified, other than this simple if-else restriction
+		*/
 		if cfg.Bitcoin.Node == "neutrino" && cfg.Bitcoin.MainNet {
+			/*
 			str := "%s: neutrino isn't yet supported for " +
 				"bitcoin's mainnet"
 			err := fmt.Errorf(str, funcName)
 			return nil, err
+			*/
 		}
 
 		if cfg.Bitcoin.TimeLockDelta < minTimeLockDelta {
